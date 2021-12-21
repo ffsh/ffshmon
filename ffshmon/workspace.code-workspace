@@ -1,0 +1,25 @@
+{
+	"folders": [
+		{
+			"path": ".."
+		},
+		{
+			"name": "SSH FS - brunsbach",
+			"uri": "ssh://brunsbach/root/ffshmon"
+		}
+	],
+	"settings": {
+		"sshfs.configs": [
+			{
+				"name": "brunsbach",
+				"host": "brunsbach.freifunk-suedholstein.de",
+				"root": "/root/ffshmon",
+				"agent": "/tmp/ssh-XXXXXXdJeRyA/agent.2051",
+				"username": "root",
+				"passphrase": true,
+				"port": 22,
+				"privateKeyPath": "$HOME/.ssh/freifunk_rsa"
+			}
+		]
+	}
+}
