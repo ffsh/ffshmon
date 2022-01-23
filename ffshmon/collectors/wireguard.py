@@ -30,7 +30,7 @@ def get_status():
 def get_health():
 
     try:
-        current_status = status()
+        current_status = get_status()
     except Exception as e:
         return "Health status is not good, received error: {}".format(e)
 
