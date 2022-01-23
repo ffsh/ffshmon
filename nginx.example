@@ -1,0 +1,6 @@
+location = /ffshmon { rewrite ^ /ffshmon/; }
+location /ffshmon { try_files $uri @ffshmon; }
+location @ffshmon {
+  include uwsgi_params;
+  uwsgi_pass unix:/var/run/ffshmon.sock;
+}
