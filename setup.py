@@ -6,7 +6,6 @@ setup(
     packages=['ffshmon'],
     include_package_data=True,
     install_requires=[
-        'flask',
-        'flup'
+        'flask'
     ],
 )
