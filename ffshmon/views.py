@@ -10,13 +10,4 @@ def hello_world():
 def health():
     health_status = None
 
-    wireguard_status = wireguard.status()
-
-    if wireguard_status != "ok":
-        health_status = wireguard_status
-
-
-    if health_status == None:
-        return "Health status is good."
-    else:
-        return "Health status is not good", 500
+    return wireguard.get_health()

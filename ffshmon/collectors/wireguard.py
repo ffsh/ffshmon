@@ -11,7 +11,7 @@ def collect():
     delta = hand_shake.total_seconds()
     return delta
 
-def status():
+def get_status():
     try:
         delta = collect()
     except Exception as e:
@@ -27,3 +27,14 @@ def status():
     return handshake_status
 
 
+def get_health():
+
+    try:
+        current_status = status()
+    except Exception as e:
+        return "Health status is not good, received error: {}".format(e)
+
+    if current_status == "ok":
+        return "Health status is ok."
+    else:
+        return "Health status is {}".format(current_status), 500
