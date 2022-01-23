@@ -4,7 +4,7 @@ from ffshmon.collectors import wireguard
 @app.route("/")
 def hello_world():
     
-    return "<p>Wireguard status is </p>{}".format(wireguard.status())
+    return "<p>Wireguard status is </p>{}".format(wireguard.get_status())
 
 @app.route("/health")
 def health():
