@@ -9,11 +9,13 @@ import smtplib
 from email.mime.text import MIMEText
 from email import utils
 
-def collect():
+def collect(attempt=0):
     result = subprocess.run(['wg', 'show', 'exit', 'latest-handshakes'], stdout=subprocess.PIPE) 
     match = re.search(r"(\d{10,})", result.stdout.decode('utf-8'))
     hand_shake = datetime.now() - datetime.fromtimestamp(int(match[1]))
     delta = hand_shake.total_seconds()
+    if attempt == 0 and delta == 0:
+        collect(attempt=1)
     return delta
 
 def get_status():
@@ -21,9 +23,11 @@ def get_status():
         delta = collect()
     except Exception as e:
         return 'failed'
-    if delta <= 120:
+    if delta == 0:
+        handshake_status = 'failed'
+    elif delta <= 120:
         handshake_status = 'ok'
-    elif delta <= 135: # 135 is used by the WireGuard reresolve-dns.sh script
+    elif delta <= 135:
         handshake_status = 'pending'
     elif delta <= 180:
         handshake_status = 'retrying'
