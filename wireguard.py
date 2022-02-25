@@ -15,6 +15,7 @@ def collect(attempt=0):
     hand_shake = datetime.now() - datetime.fromtimestamp(int(match[1]))
     delta = hand_shake.total_seconds()
     if attempt == 0 and delta == 0:
+        print("Try again")
         collect(attempt=1)
     return delta
 
@@ -56,7 +57,7 @@ def send_mail(config, message):
     msg['To'] = config["target"]
     msg['Date'] = utils.formatdate(localtime=True)
 
-    server = smtplib.SMTP_SSL(host=config["host"], port=config["port"])
+    server = smtplib.SMTP_SSL(host=config["host"], port=config["port"], timeout=10)
     # server.set_debuglevel(1)
 
     server.login(config["user"], config["password"])
