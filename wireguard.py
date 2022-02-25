@@ -76,6 +76,9 @@ if __name__ == "__main__":
             print("Sending test mail")
             send_mail(config, "test")    
     except IndexError:
-        status = get_health()
-        if status != "Health status is ok.":
-            send_mail(config, "Host: {}\n{}".format(socket.gethostname(), status))
+        try:
+            status = get_health()
+            if status != "Health status is ok.":
+                send_mail(config, "Host: {}\n{}".format(socket.gethostname(), status))
+        except TimeoutError:
+            print("Timeout, couldn't send mail.")
