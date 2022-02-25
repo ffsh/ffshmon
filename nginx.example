@@ -1,9 +1,0 @@
-location = /ffshmon { rewrite ^ /ffshmon/; }
-location /ffshmon { try_files $uri @ffshmon; }
-location @ffshmon {
-  include uwsgi_params;
-  uwsgi_pass unix:/var/run/ffshmon.sock;
-}
-
-
-sudo -u www-data uwsgi -s /tmp/ffshmon.sock --manage-script-name --mount /ffshmon=ffshmon:app --plugin python3
