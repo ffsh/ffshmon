@@ -59,9 +59,8 @@ def send_mail(config, message):
     server.sendmail(config["user"], config["target"], msg.as_string())
 
 if __name__ == "__main__":
-    
     config = {
-        "target": "benjamin@freifunk-suedholstein.de",
+        "target": "noc@freifunk-suedholstein.de",
         "host": "mail.freifunk-suedholstein.de",
         "port": "465",
         "user": sys.argv[1],
@@ -71,7 +70,7 @@ if __name__ == "__main__":
         if sys.argv[3] == "test":
             print("Sending test mail")
             send_mail(config, "test")    
-    except IndexError as e:
+    except IndexError:
         status = get_health()
-        if status == "Health status is ok.":
+        if status != "Health status is ok.":
             send_mail(config, "Host: {}\n{}".format(socket.gethostname(), status))
