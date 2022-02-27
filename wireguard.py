@@ -29,9 +29,9 @@ def get_status():
     elif delta <= 120:
         handshake_status = 'ok'
     elif delta <= 135:
-        handshake_status = 'pending'
+        handshake_status = 'ok' #pending
     elif delta <= 180:
-        handshake_status = 'retrying'
+        handshake_status = 'ok'#retry
     else:
         handshake_status = 'failed'
     return handshake_status
