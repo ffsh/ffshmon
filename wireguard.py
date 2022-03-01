@@ -10,7 +10,7 @@ from email.mime.text import MIMEText
 from email import utils
 
 def test_connection():
-    subprocess.run(['curl', '--interface', 'exit', 'https://www.google.com']) 
+    subprocess.run(['curl', '--interface', 'exit', 'https://www.google.com'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL) 
 
 def collect(attempt=0):
     result = subprocess.run(['wg', 'show', 'exit', 'latest-handshakes'], stdout=subprocess.PIPE) 
