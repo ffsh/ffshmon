@@ -9,6 +9,9 @@ import smtplib
 from email.mime.text import MIMEText
 from email import utils
 
+def test_connection():
+    subprocess.run(['curl', '--interface', 'exit', 'https://www.google.com']) 
+
 def collect(attempt=0):
     result = subprocess.run(['wg', 'show', 'exit', 'latest-handshakes'], stdout=subprocess.PIPE) 
     match = re.search(r"(\d{10,})", result.stdout.decode('utf-8'))
@@ -77,6 +80,7 @@ if __name__ == "__main__":
             send_mail(config, "test")    
     except IndexError:
         try:
+            test_connection()
             status = get_health()
             if status != "Health status is ok.":
                 send_mail(config, "Host: {}\n{}".format(socket.gethostname(), status))
