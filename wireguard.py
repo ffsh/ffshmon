@@ -55,7 +55,7 @@ def get_health():
 def send_mail(config, message):
     """ send mail according to config"""
     msg = MIMEText(message)
-    msg['Subject'] = 'Wireguard is down'
+    msg['Subject'] = "Wireguard is down on {}".format(socket.gethostname())
     msg['From'] = config["user"]
     msg['To'] = config["target"]
     msg['Date'] = utils.formatdate(localtime=True)
