@@ -3,6 +3,7 @@
 import subprocess
 import re
 import sys
+import os
 import socket
 from datetime import datetime
 import smtplib
@@ -69,6 +70,33 @@ def send_mail(config, message):
     except socket.gaierror:
         print("DNS resolution failed for {}".format(config["host"]))
 
+
+def create_file_maker(path):
+    open(file_marker, mode='a').close()
+
+def check_file_marker(path):
+    # returns true if file exists and is not expired else returns false
+    if not os.path.exists(path):
+        print("File does not exist, creating")
+        
+        return False
+    else:
+        print("File does exist checking timestamp")
+        creation_time = datetime.fromtimestamp(os.path.getctime(path))
+        passed_time = creation_time - datetime.now()
+        if passed_time.total_seconds() <= 14400:
+            os.remove(path)
+            print("Time has passed, removed file")
+            return False
+        else: 
+            print("Time has not passed, please wait")
+            return True
+
+def remove_file_marker(path):
+    if os.path.exists(path):
+        os.remove(path)
+
+
 if __name__ == "__main__":
     config = {
         "target": "noc@freifunk-suedholstein.de",
@@ -77,6 +105,8 @@ if __name__ == "__main__":
         "user": sys.argv[1],
         "password": sys.argv[2]
     }
+    file_marker = "/tmp/ffshmon_marker"
+
     try:
         if sys.argv[3] == "test":
             print("Sending test mail")
@@ -86,6 +116,13 @@ if __name__ == "__main__":
             test_connection()
             status = get_health()
             if status != "Health status is ok.":
-                send_mail(config, "Host: {}\n{}".format(socket.gethostname(), status))
+                if not check_file_marker(path):
+                    send_mail(config, "Host: {}\n{}".format(socket.gethostname(), status))
+                    create_file_maker(path)
+                else:
+                    print("Not sending mail")
+            else:
+                print("Status was ok, removing marker")
+                remove_file_marker(path)
         except TimeoutError:
             print("Timeout, couldn't send mail.")
