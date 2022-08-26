@@ -105,7 +105,7 @@ if __name__ == "__main__":
         "user": sys.argv[1],
         "password": sys.argv[2]
     }
-    file_marker = "/tmp/ffshmon_marker"
+    path = "/tmp/ffshmon_marker"
 
     try:
         if sys.argv[3] == "test":
