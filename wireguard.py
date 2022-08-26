@@ -60,11 +60,14 @@ def send_mail(config, message):
     msg['To'] = config["target"]
     msg['Date'] = utils.formatdate(localtime=True)
 
-    server = smtplib.SMTP_SSL(host=config["host"], port=config["port"], timeout=10)
-    # server.set_debuglevel(1)
+    try:
+        server = smtplib.SMTP_SSL(host=config["host"], port=config["port"], timeout=10)
+        # server.set_debuglevel(1)
 
-    server.login(config["user"], config["password"])
-    server.sendmail(config["user"], config["target"], msg.as_string())
+        server.login(config["user"], config["password"])
+        server.sendmail(config["user"], config["target"], msg.as_string())
+    except socket.gaierror:
+        print("DNS resolution failed for {}".format(config["host"]))
 
 if __name__ == "__main__":
     config = {
