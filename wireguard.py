@@ -72,7 +72,7 @@ def send_mail(config, message):
 
 
 def create_file_maker(path):
-    open(file_marker, mode='a').close()
+    open(path, mode='a').close()
 
 def check_file_marker(path):
     # returns true if file exists and is not expired else returns false
