@@ -83,7 +83,9 @@ def check_file_marker(path):
     else:
         print("File does exist checking timestamp")
         creation_time = datetime.fromtimestamp(os.path.getctime(path))
+        print("DEBUG: creation_time: {}".format(creation_time))
         passed_time = creation_time - datetime.now()
+        print("DEBUG: passed time {}".format(passed_time))
         if passed_time.total_seconds() <= 14400:
             os.remove(path)
             print("Time has passed, removed file")
