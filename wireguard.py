@@ -74,30 +74,31 @@ def send_mail(config, message):
 def create_file_maker(path):
     open(path, mode='a').close()
 
+def remove_file_marker(path):
+    if os.path.exists(path):
+        os.remove(path)
+
 def check_file_marker(path):
     # returns true if file exists and is not expired else returns false
     if not os.path.exists(path):
-        print("File does not exist, creating")
-        
+        print("File does not exist")
         return False
     else:
         print("File does exist checking timestamp")
         creation_time = datetime.fromtimestamp(os.path.getctime(path))
-        #print("DEBUG: creation_time: {}".format(creation_time))
+        # print("DEBUG: creation_time: {}".format(creation_time))
+        
         passed_time = creation_time - datetime.now()
+        
         #print("DEBUG: passed time {}".format(passed_time))
+        
         if abs(passed_time.total_seconds()) <= 14400:
-            self.remove_file_marker(path)
+            remove_file_marker(path)
             print("Time has passed, removed file")
             return False
         else: 
             print("Time has not passed, please wait")
             return True
-
-def remove_file_marker(path):
-    if os.path.exists(path):
-        os.remove(path)
-
 
 if __name__ == "__main__":
     config = {
