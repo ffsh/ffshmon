@@ -90,9 +90,9 @@ def check_file_marker(path):
         
         passed_time = creation_time - datetime.now()
         
-        #print("DEBUG: passed time {}".format(passed_time))
+        print("DEBUG: passed time {}".format(passed_time.total_seconds()))
         
-        if abs(passed_time.total_seconds()) <= 14400:
+        if abs(passed_time.total_seconds()) >= 14400:
             remove_file_marker(path)
             print("Time has passed, removed file")
             return False
