@@ -111,11 +111,15 @@ def check_file_marker(path):
             return True
 
 if __name__ == "__main__":
+
+    log_format = '%(asctime)s %(levelname)-8s %(message)s'
+    date_format = '%Y-%m-%d %H:%M:%S'
+
     try:
-        logging.basicConfig(filename=log_file, encoding='utf-8', level=log_level)
+        logging.basicConfig(format=log_format, datefmt=date_format, filename=log_file, encoding='utf-8', level=log_level)
     except FileNotFoundError:
         logging.warning("Logfile not found, logging to stdout")
-        logging.basicConfig(level=log_level, force=True)
+        logging.basicConfig(format=log_format, datefmt=date_format, level=log_level, force=True)
 
     try:
         config = {
