@@ -13,6 +13,10 @@ from email import utils
 
 # LogLevel DEBUG, INFO, WARNING, ERROR
 log_level = logging.INFO
+
+# path for logfile path has to exist and be writeable
+log_file = "/var/log/ffshmon/ffshmon.log"
+
 # Path for the marker
 path_marker = "/tmp/ffshmon_marker"
 
@@ -107,7 +111,7 @@ def check_file_marker(path):
             return True
 
 if __name__ == "__main__":
-    logging.basicConfig(level=log_level)
+    logging.basicConfig(filename=log_file, encoding='utf-8', level=log_level)
 
     try:
         config = {
@@ -119,6 +123,7 @@ if __name__ == "__main__":
         }
     except IndexError:
         logging.warning("User and Password are required, python3 wireguard.py $user $password")
+        exit()
     
     try:
         if sys.argv[3] == "test":
