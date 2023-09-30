@@ -115,7 +115,7 @@ if __name__ == "__main__":
         logging.basicConfig(filename=log_file, encoding='utf-8', level=log_level)
     except FileNotFoundError:
         logging.warning("Logfile not found, logging to stdout")
-        logging.basicConfig(level=log_level, force=true)
+        logging.basicConfig(level=log_level, force=True)
 
     try:
         config = {
