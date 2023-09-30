@@ -12,7 +12,7 @@ from email.mime.text import MIMEText
 from email import utils
 
 # LogLevel DEBUG, INFO, WARNING, ERROR
-log_level = logging.INFO
+log_level = logging.WARNING
 
 # path for logfile path has to exist and be writeable
 log_file = "/var/log/ffshmon/ffshmon.log"
@@ -148,7 +148,7 @@ if __name__ == "__main__":
                 else:
                     logging.info("Not sending mail, marker exists and is valid.")
             else:
-                logging.info("Status was ok, removing marker")
+                logging.info("Status was ok, removing marker if it exists")
                 remove_file_marker(path_marker)
         except TimeoutError:
             logging.error("Timeout, couldn't send mail.")
