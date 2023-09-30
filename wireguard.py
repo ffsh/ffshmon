@@ -5,10 +5,14 @@ import re
 import sys
 import os
 import socket
+import logging
 from datetime import datetime
 import smtplib
 from email.mime.text import MIMEText
 from email import utils
+
+# LogLevel DEBUG, INFO, WARNING, ERROR
+log_level = logging.INFO
 
 def test_connection():
     subprocess.run(['curl', '--connect-timeout', '10', '--interface', 'exit', 'https://www.google.com'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
@@ -19,7 +23,7 @@ def collect(attempt=0):
     hand_shake = datetime.now() - datetime.fromtimestamp(int(match[1]))
     delta = hand_shake.total_seconds()
     if attempt == 0 and delta == 0:
-        print("Try again")
+        logging.info("Attempt {} failed, trying again".format(attempt))
         collect(attempt=1)
     return delta
 
@@ -68,7 +72,7 @@ def send_mail(config, message):
         server.login(config["user"], config["password"])
         server.sendmail(config["user"], config["target"], msg.as_string())
     except socket.gaierror:
-        print("DNS resolution failed for {}".format(config["host"]))
+        logging.error("DNS resolution failed for {}".format(config["host"]))
 
 
 def create_file_maker(path):
@@ -81,26 +85,27 @@ def remove_file_marker(path):
 def check_file_marker(path):
     # returns true if file exists and is not expired else returns false
     if not os.path.exists(path):
-        print("File does not exist")
+        logging.info("Marker file does not exist")
         return False
     else:
-        print("File does exist checking timestamp")
+        logging.info("Marker file does exist checking timestamp")
         creation_time = datetime.fromtimestamp(os.path.getctime(path))
-        # print("DEBUG: creation_time: {}".format(creation_time))
+        logging.debug("creation_time: {}".format(creation_time))
         
         passed_time = creation_time - datetime.now()
         
-        print("DEBUG: passed time {}".format(passed_time.total_seconds()))
+        logging.debug("passed time {}".format(passed_time.total_seconds()))
         
         if abs(passed_time.total_seconds()) >= 14400:
             remove_file_marker(path)
-            print("Time has passed, removed file")
+            logging.info("Time has passed, removed file")
             return False
         else: 
-            print("Time has not passed, please wait")
+            logging.info("Time has not passed, please wait")
             return True
 
 if __name__ == "__main__":
+    logging.basicConfig(level=log_level)
     config = {
         "target": "noc@freifunk-suedholstein.de",
         "host": "mail.freifunk-suedholstein.de",
@@ -112,7 +117,7 @@ if __name__ == "__main__":
 
     try:
         if sys.argv[3] == "test":
-            print("Sending test mail")
+            logging.info("Sending test mail")
             send_mail(config, "test")    
     except IndexError:
         try:
@@ -123,9 +128,9 @@ if __name__ == "__main__":
                     send_mail(config, "Host: {}\n{}".format(socket.gethostname(), status))
                     create_file_maker(path)
                 else:
-                    print("Not sending mail")
+                    logging.info("Not sending mail, marker exists and is valid.")
             else:
-                print("Status was ok, removing marker")
+                logging.info("Status was ok, removing marker")
                 remove_file_marker(path)
         except TimeoutError:
-            print("Timeout, couldn't send mail.")
+            logging.error("Timeout, couldn't send mail.")
