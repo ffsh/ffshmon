@@ -130,7 +130,7 @@ if __name__ == "__main__":
             "password": sys.argv[2]
         }
     except IndexError:
-        logging.warning("User and Password are required, python3 wireguard.py $user $password")
+        logging.error("User and Password are required, python3 wireguard.py $user $password")
         exit()
     
     try:
