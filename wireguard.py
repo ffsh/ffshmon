@@ -111,7 +111,11 @@ def check_file_marker(path):
             return True
 
 if __name__ == "__main__":
-    logging.basicConfig(filename=log_file, encoding='utf-8', level=log_level)
+    try:
+        logging.basicConfig(filename=log_file, encoding='utf-8', level=log_level)
+    except FileNotFoundError:
+        logging.warning("Logfile not found, logging to stdout")
+        logging.basicConfig(level=log_level)
 
     try:
         config = {
