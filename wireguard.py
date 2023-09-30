@@ -106,13 +106,17 @@ def check_file_marker(path):
 
 if __name__ == "__main__":
     logging.basicConfig(level=log_level)
-    config = {
-        "target": "noc@freifunk-suedholstein.de",
-        "host": "mail.freifunk-suedholstein.de",
-        "port": "465",
-        "user": sys.argv[1],
-        "password": sys.argv[2]
-    }
+
+    try:
+        config = {
+            "target": "noc@freifunk-suedholstein.de",
+            "host": "mail.freifunk-suedholstein.de",
+            "port": "465",
+            "user": sys.argv[1],
+            "password": sys.argv[2]
+        }
+    except IndexError:
+        logging.warning("User and Password are required, python3 wireguard.py $user $password)
     path = "/tmp/ffshmon_marker"
 
     try:
