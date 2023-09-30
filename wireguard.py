@@ -13,6 +13,8 @@ from email import utils
 
 # LogLevel DEBUG, INFO, WARNING, ERROR
 log_level = logging.INFO
+# Path for the marker
+path_marker = "/tmp/ffshmon_marker"
 
 def test_connection():
     subprocess.run(['curl', '--connect-timeout', '10', '--interface', 'exit', 'https://www.google.com'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
@@ -116,9 +118,8 @@ if __name__ == "__main__":
             "password": sys.argv[2]
         }
     except IndexError:
-        logging.warning("User and Password are required, python3 wireguard.py $user $password)
-    path = "/tmp/ffshmon_marker"
-
+        logging.warning("User and Password are required, python3 wireguard.py $user $password")
+    
     try:
         if sys.argv[3] == "test":
             logging.info("Sending test mail")
@@ -128,13 +129,13 @@ if __name__ == "__main__":
             test_connection()
             status = get_health()
             if status != "Health status is ok.":
-                if not check_file_marker(path):
+                if not check_file_marker(path_marker):
                     send_mail(config, "Host: {}\n{}".format(socket.gethostname(), status))
-                    create_file_maker(path)
+                    create_file_maker(path_marker)
                 else:
                     logging.info("Not sending mail, marker exists and is valid.")
             else:
                 logging.info("Status was ok, removing marker")
-                remove_file_marker(path)
+                remove_file_marker(path_marker)
         except TimeoutError:
             logging.error("Timeout, couldn't send mail.")
