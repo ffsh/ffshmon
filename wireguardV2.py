@@ -120,7 +120,14 @@ def check(user, password, log):
     except FileExistsError:
         pass
 
+    # Logging Config
+    # LogLevel DEBUG, INFO, WARNING, ERROR
+    log_level = logging.INFO
+    log_format = '%(asctime)s %(levelname)-8s %(message)s'
+    date_format = '%Y-%m-%d %H:%M:%S'
+    logging.basicConfig(format=log_format, datefmt=date_format, filename=log, encoding='utf-8', level=log_level)
 
+    # Mail Config
     config = {
     "target": "benjamin@freifunk-suedholstein.de",
     "host": "mail.freifunk-suedholstein.de",
@@ -129,11 +136,7 @@ def check(user, password, log):
     "password": password
     }
     action("exit", config)
-    # LogLevel DEBUG, INFO, WARNING, ERROR
-    log_level = logging.INFO
-    log_format = '%(asctime)s %(levelname)-8s %(message)s'
-    date_format = '%Y-%m-%d %H:%M:%S'
-    logging.basicConfig(format=log_format, datefmt=date_format, filename=log, encoding='utf-8', level=log_level)
+    
 
 
 if __name__ == "__main__":
