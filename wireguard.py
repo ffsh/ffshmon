@@ -6,6 +6,10 @@ from config_manager import new_config
 from hard_stop import stop_fastd, stop_wg
 from inform_admin import send_mail
 
+def is_service_running(service_name):
+    result = subprocess.run(["systemctl", "show", "-p", "SubState", f"fastd@{service_name}.service"], capture_output=True, text=True)
+    return result.stdout.strip() == "active"
+
 def test_interface(interface_name):
     """Returns True if interface is ok, returns False if interface is not ok."""
     curl_cmd = ['curl', '--connect-timeout', '10', '--interface', 'exit', 'https://am.i.mullvad.net/json']
@@ -70,13 +74,16 @@ def check(user, password, log):
 
     # Mail Config
     config = {
-    "target": "benjamin@freifunk-suedholstein.de",
+    "target": "noc@freifunk-suedholstein.de",
     "host": "mail.freifunk-suedholstein.de",
     "port": "465",
     "user": user,
     "password": password
     }
-    verify(interface_name="exit", fastd_name="ffsh", mail_config=config )
+    if is_service_running(service_name="ffsh"):
+        verify(interface_name="exit", fastd_name="ffsh", mail_config=config)
+    else:
+        logging.info("Fastd service is down, not checking connection")
 
 if __name__ == "__main__":
     cli()
