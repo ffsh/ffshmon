@@ -8,7 +8,7 @@ from inform_admin import send_mail
 
 def is_service_running(service_name):
     result = subprocess.run(["systemctl", "show", "-p", "SubState", f"fastd@{service_name}.service"], capture_output=True, text=True)
-    return result.stdout.strip() == "active"
+    return result.stdout.strip() == "SubState=running"
 
 def test_interface(interface_name):
     """Returns True if interface is ok, returns False if interface is not ok."""
