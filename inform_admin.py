@@ -4,13 +4,14 @@ from email import utils
 import socket
 import logging
 
+
 def send_mail(config, message):
-    """ send mail according to config"""
+    """send mail according to config"""
     msg = MIMEText(message)
-    msg['Subject'] = "Wireguard is down on {}".format(socket.gethostname())
-    msg['From'] = config["user"]
-    msg['To'] = config["target"]
-    msg['Date'] = utils.formatdate(localtime=True)
+    msg["Subject"] = "Wireguard is down on {}".format(socket.gethostname())
+    msg["From"] = config["user"]
+    msg["To"] = config["target"]
+    msg["Date"] = utils.formatdate(localtime=True)
 
     try:
         server = smtplib.SMTP_SSL(host=config["host"], port=config["port"], timeout=10)
