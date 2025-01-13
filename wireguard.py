@@ -32,7 +32,7 @@ def test_interface(interface_name):
     except (subprocess.CalledProcessError, json.JSONDecodeError):
         return False
     try:
-        if data["mullvad_exit_ip"] == True:
+        if data["mullvad_exit_ip"] is True:
             logging.info("Everything ok.")
             return True
         else:
@@ -48,12 +48,12 @@ def test_interface(interface_name):
 def verify(interface_name, fastd_name, mail_config):
     result = test_interface(interface_name)
 
-    if result == False:
+    if result is False:
         # connection not ok
         logging.warning("Connection via vpn not ok, generating new config")
         new_config(interface_name)
         result = test_interface(interface_name)
-        if result == False:
+        if result is False:
             logging.error("New config did not help, stop fastd")
             stop_fastd(fastd_name)
             stop_wg(interface_name)
@@ -78,7 +78,7 @@ def check(user, password, log):
 
     # Create log file if it does not exist
     try:
-        with open(log, "x") as file:
+        with open(log, "x"):
             # This part will only execute if the file is created successfully
             pass
     except FileExistsError:
