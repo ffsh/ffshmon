@@ -36,11 +36,11 @@ def verify(interface_name, fastd_name, mail_config):
 
     if result == False:
         # connection not ok
-        logging.info("Connection via vpn not ok, generating new config")
+        logging.warning("Connection via vpn not ok, generating new config")
         new_config(interface_name)
         result = test_interface(interface_name)
         if result == False:
-            logging.info("New config did not help, stop fastd")
+            logging.error("New config did not help, stop fastd")
             stop_fastd(fastd_name)
             stop_wg(interface_name)
             send_mail(mail_config, "VPN connection did not work, new VPN config did not help.\nFastd and wireguard stopped.")
