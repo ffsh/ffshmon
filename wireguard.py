@@ -29,7 +29,9 @@ def test_interface(interface_name):
     try:
         result = subprocess.run(curl_cmd, capture_output=True, text=True, check=True)
         data = json.loads(result.stdout)
-    except (subprocess.CalledProcessError, json.JSONDecodeError):
+    except (subprocess.CalledProcessError, json.JSONDecodeError) as e:
+        logging.error("Curl could not connect to Mullvad or json was not valid")
+        logging.error(e)
         return False
     try:
         if data["mullvad_exit_ip"] is True:
