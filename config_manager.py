@@ -15,6 +15,8 @@ def new_config(interface):
         logging.error(
             "Failed to recreate wireguard config, restarting wireguard anyway"
         )
+    logging.info("Output of wg-conf-gen:")
+    logging.info(result.stdout)
     subprocess.run(
         ["systemctl", "restart", f"wg-quick@{interface}.service"],
         stdout=subprocess.DEVNULL,
