@@ -24,4 +24,4 @@ def stop_wg(service_name):
         stderr=subprocess.DEVNULL,
         check=True,
     )
-    logging.info("Stopped wireguardw service")
+    logging.info("Stopped wireguard service")
