@@ -39,7 +39,6 @@ def is_service_running(service_name):
 def test_interface(interface_name):
     """Returns True if interface is ok, returns False if interface is not ok."""
     curl_cmd = [
-        "sudo",
         "curl",
         "--connect-timeout",
         "10",
