@@ -1,0 +1,17 @@
+{
+  "name": "ffshmon",
+  "image": "mcr.microsoft.com/devcontainers/python:3.13-trixie",
+  "postCreateCommand": "python -m pip install --requirement requirements.txt",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-python.vscode-pylance"
+      ],
+      "settings": {
+        "python.analysis.autoSearchPaths": true,
+        "python.analysis.typeCheckingMode": "basic"
+      }
+    }
+  }
+}
