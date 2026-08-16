@@ -3,6 +3,7 @@
 import socket
 import subprocess
 import unittest
+import logging
 from unittest.mock import patch
 from urllib.request import urlopen
 
@@ -80,11 +81,15 @@ class WireguardTests(unittest.TestCase):
                             "test-password",
                             "--log",
                             "/tmp/ffshmon-test.log",
+                            "--loglevel",
+                            "DEBUG",
                         ],
                     )
 
         self.assertEqual(result.exit_code, 0, result.output)
-        configure_logging.assert_called_once_with("/tmp/ffshmon-test.log")
+        configure_logging.assert_called_once_with(
+            "/tmp/ffshmon-test.log", logging.DEBUG
+        )
 
 
 if __name__ == "__main__":

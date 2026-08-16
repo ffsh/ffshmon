@@ -31,7 +31,8 @@ Run the existing scheduled check with mail credentials and a log file:
 sudo .venv/bin/python wireguard.py check \
   --user noc@example.org \
   --password 'mail-password' \
-  --log /var/log/ffshmon.log
+  --log /var/log/ffshmon.log \
+  --loglevel INFO
 ```
 
 The command exits after one health cycle. If the FastD service is down, the connection probe is skipped and the status is considered down. If the probe fails, `ffshmon` regenerates the WireGuard configuration and retries once. A second failure stops FastD and WireGuard and sends an email alert.
@@ -44,7 +45,8 @@ Start the long-running monitor with:
 sudo .venv/bin/python wireguard.py serve \
   --user noc@example.org \
   --password 'mail-password' \
-  --log /var/log/ffshmon.log
+  --log /var/log/ffshmon.log \
+  --loglevel INFO
 ```
 
 By default, the process:
@@ -68,13 +70,14 @@ wireguard_up{interface="exit"} 1.0
 
 A value of `1` means the latest check succeeded. A value of `0` means the FastD service or WireGuard connectivity check is down.
 
-The listener and polling interval can be changed with `--host`, `--port`, and `--interval`:
+The log level can be set with `--loglevel` to `DEBUG`, `INFO`, `WARNING`, `ERROR`, or `CRITICAL`. The listener and polling interval can be changed with `--host`, `--port`, and `--interval`:
 
 ```bash
 sudo .venv/bin/python wireguard.py serve \
   --user noc@example.org \
   --password 'mail-password' \
   --log /var/log/ffshmon.log \
+  --loglevel INFO \
   --host 127.0.0.1 \
   --port 8000 \
   --interval 60

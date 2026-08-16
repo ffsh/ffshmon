@@ -132,7 +132,7 @@ def run_check(
     return False
 
 
-def configure_logging(log):
+def configure_logging(log, loglevel=logging.INFO):
     """Create the log file if needed and configure application logging."""
     try:
         with open(log, "x", encoding="utf-8"):
@@ -145,7 +145,7 @@ def configure_logging(log):
         datefmt="%Y-%m-%d %H:%M:%S",
         filename=log,
         encoding="utf-8",
-        level=logging.INFO,
+        level=loglevel,
     )
 
 
@@ -169,9 +169,15 @@ def cli():
 @click.option("--user", help="Mail address", required=True)
 @click.option("--password", help="Password for Mail Address", required=True)
 @click.option("--log", help="Path to log file", required=True)
-def check(user, password, log):
+@click.option(
+    "--loglevel",
+    type=click.Choice(["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]),
+    default="INFO",
+    show_default=True,
+)
+def check(user, password, log, loglevel):
     """Check the status of the WireGuard interface once."""
-    configure_logging(log)
+    configure_logging(log, getattr(logging, loglevel))
     run_check(build_mail_config(user, password))
 
 
@@ -179,6 +185,12 @@ def check(user, password, log):
 @click.option("--user", help="Mail address", required=True)
 @click.option("--password", help="Password for Mail Address", required=True)
 @click.option("--log", help="Path to log file", required=True)
+@click.option(
+    "--loglevel",
+    type=click.Choice(["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]),
+    default="INFO",
+    show_default=True,
+)
 @click.option("--interval", type=float, default=60.0, show_default=True)
 @click.option("--host", default="127.0.0.1", show_default=True)
 @click.option("--port", type=int, default=8000, show_default=True)
@@ -187,10 +199,11 @@ def serve(**kwargs):
     user = kwargs["user"]
     password = kwargs["password"]
     log = kwargs["log"]
+    loglevel = kwargs["loglevel"]
     interval = kwargs["interval"]
     host = kwargs["host"]
     port = kwargs["port"]
-    configure_logging(log)
+    configure_logging(log, getattr(logging, loglevel))
     start_http_server(port, addr=host)
     config = build_mail_config(user, password)
     try:
