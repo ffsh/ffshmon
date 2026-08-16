@@ -2,6 +2,9 @@
 
 import subprocess
 import logging
+import time
+
+WG_RESTART_DELAY = 3
 
 
 def new_config(interface):
@@ -28,3 +31,5 @@ def new_config(interface):
         check=False,
     )
     logging.info("Restarted wireguard service")
+    # give the interface/handshake time to come up before it gets probed
+    time.sleep(WG_RESTART_DELAY)

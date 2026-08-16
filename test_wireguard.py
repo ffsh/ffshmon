@@ -1,6 +1,7 @@
 """Tests for WireGuard status checks and Prometheus metrics."""
 
 import socket
+import subprocess
 import unittest
 from unittest.mock import patch
 from urllib.request import urlopen
@@ -23,6 +24,31 @@ class WireguardTests(unittest.TestCase):
         command = run.call_args.args[0]
         self.assertEqual(command[0], "curl")
         self.assertIn("wg-test", command)
+
+    def test_interface_probe_retries_after_transient_failure(self):
+        """A single failed curl attempt should not fail the probe if a later attempt succeeds."""
+        curl_result = type("Result", (), {"stdout": '{"mullvad_exit_ip": true}'})()
+        error = subprocess.CalledProcessError(28, ["curl"], stderr="timed out")
+        with patch(
+            "wireguard.subprocess.run", side_effect=[error, curl_result]
+        ) as run:
+            with patch("wireguard.time.sleep") as sleep:
+                self.assertTrue(wireguard.test_interface("wg-test"))
+
+        self.assertEqual(run.call_count, 2)
+        sleep.assert_called_once_with(wireguard.CURL_RETRY_DELAY)
+
+    def test_interface_probe_fails_after_exhausting_retries(self):
+        """The probe should give up and return False once all retries fail."""
+        error = subprocess.CalledProcessError(28, ["curl"], stderr="timed out")
+        with patch(
+            "wireguard.subprocess.run", side_effect=[error] * wireguard.CURL_RETRIES
+        ) as run:
+            with patch("wireguard.time.sleep") as sleep:
+                self.assertFalse(wireguard.test_interface("wg-test"))
+
+        self.assertEqual(run.call_count, wireguard.CURL_RETRIES)
+        self.assertEqual(sleep.call_count, wireguard.CURL_RETRIES - 1)
 
     def test_metrics_endpoint_exposes_cached_status(self):
         """The HTTP endpoint should expose the latest cached gauge value."""
