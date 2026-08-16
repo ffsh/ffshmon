@@ -5,6 +5,7 @@ import unittest
 from unittest.mock import patch
 from urllib.request import urlopen
 
+from click.testing import CliRunner
 from prometheus_client import start_http_server
 
 import wireguard
@@ -36,6 +37,28 @@ class WireguardTests(unittest.TestCase):
             metrics = response.read().decode("utf-8")
 
         self.assertIn('wireguard_up{interface="exit"} 1.0', metrics)
+
+    def test_serve_accepts_click_options(self):
+        """The serve callback should accept options passed by Click."""
+        runner = CliRunner()
+        with patch("wireguard.configure_logging") as configure_logging:
+            with patch("wireguard.start_http_server"):
+                with patch("wireguard.run_check", side_effect=KeyboardInterrupt):
+                    result = runner.invoke(
+                        wireguard.cli,
+                        [
+                            "serve",
+                            "--user",
+                            "test@example.org",
+                            "--password",
+                            "test-password",
+                            "--log",
+                            "/tmp/ffshmon-test.log",
+                        ],
+                    )
+
+        self.assertEqual(result.exit_code, 0, result.output)
+        configure_logging.assert_called_once_with("/tmp/ffshmon-test.log")
 
 
 if __name__ == "__main__":
