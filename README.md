@@ -93,6 +93,8 @@ scrape_configs:
 
 If Prometheus runs on another host, bind `serve` to an appropriate reachable address and protect the endpoint with firewall rules or a reverse proxy. The endpoint has no built-in authentication.
 
+The connectivity probe runs as the service user and does not require `sudo`. The service-management and configuration-recovery commands use `sudo` and must be allowed for the service user without an interactive password prompt.
+
 ## Running as a service
 
 Run `serve` as a supervised systemd service so the endpoint remains available. A minimal unit could look like this:

@@ -21,7 +21,7 @@ class WireguardTests(unittest.TestCase):
             self.assertTrue(wireguard.test_interface("wg-test"))
 
         command = run.call_args.args[0]
-        self.assertEqual(command[0], "sudo")
+        self.assertEqual(command[0], "curl")
         self.assertIn("wg-test", command)
 
     def test_metrics_endpoint_exposes_cached_status(self):
