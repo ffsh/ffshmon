@@ -13,6 +13,8 @@ from inform_admin import send_mail
 
 WIREGUARD_INTERFACE = "exit"
 FASTD_SERVICE = "ffsh"
+CURL_RETRIES = 3
+CURL_RETRY_DELAY = 2
 wireguard_up = Gauge(
     "wireguard_up", "Whether the WireGuard connection is up", ["interface"]
 )
@@ -41,17 +43,43 @@ def test_interface(interface_name):
     curl_cmd = [
         "curl",
         "--connect-timeout",
-        "10",
+        "15",
         "--interface",
         interface_name,
         "https://am.i.mullvad.net/json",
     ]
-    try:
-        result = subprocess.run(curl_cmd, capture_output=True, text=True, check=True)
-        data = json.loads(result.stdout)
-    except (subprocess.CalledProcessError, json.JSONDecodeError) as e:
-        logging.error("Curl could not connect to Mullvad or json was not valid")
-        logging.error(e)
+    data = None
+    for attempt in range(1, CURL_RETRIES + 1):
+        try:
+            result = subprocess.run(
+                curl_cmd, capture_output=True, text=True, check=True
+            )
+            data = json.loads(result.stdout)
+            break
+        except subprocess.CalledProcessError as e:
+            logging.error(
+                "Curl could not connect to Mullvad (attempt %d/%d), "
+                "returncode=%s, stderr=%s",
+                attempt,
+                CURL_RETRIES,
+                e.returncode,
+                e.stderr,
+            )
+        except json.JSONDecodeError as e:
+            logging.error(
+                "Curl returned invalid json (attempt %d/%d): %s, stdout=%s",
+                attempt,
+                CURL_RETRIES,
+                e,
+                result.stdout,
+            )
+        if attempt < CURL_RETRIES:
+            time.sleep(CURL_RETRY_DELAY)
+    if data is None:
+        logging.error(
+            "Curl could not connect to Mullvad or json was not valid after %d attempts",
+            CURL_RETRIES,
+        )
         return False
     try:
         connected = data["mullvad_exit_ip"] is True
