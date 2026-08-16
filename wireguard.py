@@ -21,7 +21,14 @@ wireguard_up = Gauge(
 def is_service_running(service_name):
     """Return whether the configured FastD service is running."""
     result = subprocess.run(
-        ["systemctl", "show", "-p", "SubState", f"fastd@{service_name}.service"],
+        [
+            "sudo",
+            "systemctl",
+            "show",
+            "-p",
+            "SubState",
+            f"fastd@{service_name}.service",
+        ],
         capture_output=True,
         text=True,
         check=False,
@@ -32,6 +39,7 @@ def is_service_running(service_name):
 def test_interface(interface_name):
     """Returns True if interface is ok, returns False if interface is not ok."""
     curl_cmd = [
+        "sudo",
         "curl",
         "--connect-timeout",
         "10",

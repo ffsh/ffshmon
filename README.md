@@ -28,7 +28,7 @@ python3 -m venv .venv
 Run the existing scheduled check with mail credentials and a log file:
 
 ```bash
-.venv/bin/python wireguard.py check \
+sudo .venv/bin/python wireguard.py check \
   --user noc@example.org \
   --password 'mail-password' \
   --log /var/log/ffshmon.log
@@ -41,7 +41,7 @@ The command exits after one health cycle. If the FastD service is down, the conn
 Start the long-running monitor with:
 
 ```bash
-.venv/bin/python wireguard.py serve \
+sudo .venv/bin/python wireguard.py serve \
   --user noc@example.org \
   --password 'mail-password' \
   --log /var/log/ffshmon.log
@@ -71,7 +71,7 @@ A value of `1` means the latest check succeeded. A value of `0` means the FastD 
 The listener and polling interval can be changed with `--host`, `--port`, and `--interval`:
 
 ```bash
-.venv/bin/python wireguard.py serve \
+sudo .venv/bin/python wireguard.py serve \
   --user noc@example.org \
   --password 'mail-password' \
   --log /var/log/ffshmon.log \

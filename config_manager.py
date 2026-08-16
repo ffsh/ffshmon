@@ -1,12 +1,16 @@
+"""Regenerate and restart the WireGuard configuration."""
+
 import subprocess
 import logging
 
 
 def new_config(interface):
+    """Regenerate the WireGuard configuration and restart its service."""
     result = subprocess.run(
-        ["python3", "/opt/wg-conf-gen/wg-conf-gen.py", "recreate"],
+        ["sudo", "python3", "/opt/wg-conf-gen/wg-conf-gen.py", "recreate"],
         capture_output=True,
         text=True,
+        check=False,
     )
     if result.returncode != 0:
         logging.error("Error while recreating wireguard config:")
@@ -18,8 +22,9 @@ def new_config(interface):
     logging.info("Output of wg-conf-gen:")
     logging.info(result.stdout)
     subprocess.run(
-        ["systemctl", "restart", f"wg-quick@{interface}.service"],
+        ["sudo", "systemctl", "restart", f"wg-quick@{interface}.service"],
         stdout=subprocess.DEVNULL,
         stderr=subprocess.DEVNULL,
+        check=False,
     )
     logging.info("Restarted wireguard service")

@@ -1,3 +1,5 @@
+"""Stop the FastD and WireGuard services during failed recovery."""
+
 import subprocess
 import logging
 
@@ -5,7 +7,7 @@ import logging
 def stop_fastd(service_name):
     """Stop fastd"""
     subprocess.run(
-        ["systemctl", "stop", f"fastd@{service_name}.service"],
+        ["sudo", "systemctl", "stop", f"fastd@{service_name}.service"],
         stdout=subprocess.DEVNULL,
         stderr=subprocess.DEVNULL,
         check=True,
@@ -15,8 +17,9 @@ def stop_fastd(service_name):
 
 # stop wg tunnel
 def stop_wg(service_name):
+    """Stop the WireGuard service for the configured interface."""
     subprocess.run(
-        ["systemctl", "stop", f"wg-quick@{service_name}.service"],
+        ["sudo", "systemctl", "stop", f"wg-quick@{service_name}.service"],
         stdout=subprocess.DEVNULL,
         stderr=subprocess.DEVNULL,
         check=True,
