@@ -155,15 +155,14 @@ def check(user, password, log):
 @click.option("--interval", type=float, default=60.0, show_default=True)
 @click.option("--host", default="127.0.0.1", show_default=True)
 @click.option("--port", type=int, default=8000, show_default=True)
-@click.pass_context
-def serve(context):
+def serve(**kwargs):
     """Run checks and expose the latest WireGuard status as Prometheus metrics."""
-    user = context.params["user"]
-    password = context.params["password"]
-    log = context.params["log"]
-    interval = context.params["interval"]
-    host = context.params["host"]
-    port = context.params["port"]
+    user = kwargs["user"]
+    password = kwargs["password"]
+    log = kwargs["log"]
+    interval = kwargs["interval"]
+    host = kwargs["host"]
+    port = kwargs["port"]
     configure_logging(log)
     start_http_server(port, addr=host)
     config = build_mail_config(user, password)
